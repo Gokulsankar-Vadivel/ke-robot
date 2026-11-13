@@ -1,0 +1,28 @@
+INSTITUTIONAL STUDY MODULE 04: ROS2 ARCHITECTURE AND AUTONOMOUS NAVIGATION
+Department of Robotics & Automation Engineering
+
+--- PAGE 1 ---
+4.1 Transition from ROS1 to ROS2
+Robot Operating System 2 (ROS2) is a distributed middleware framework built on the Data Distribution Service (DDS) standard. Unlike ROS1, which relied on a single central roscore master node, ROS2 uses peer-to-peer DDS discovery, eliminating single points of failure and supporting real-time Quality of Service (QoS) profiles. QoS policies let engineers specify reliability (Reliable vs. Best Effort for high-frequency camera/LiDAR streams), durability (Transient Local for static maps), and history depth.
+
+4.2 Core ROS2 Communication Primitives
+- Nodes: Modular single-purpose processes (e.g., lidar_driver_node, ekf_localization_node, path_planner_node).
+- Topics (Publish/Subscribe): Asynchronous many-to-many data streams carrying strongly typed messages (sensor_msgs/LaserScan, geometry_msgs/Twist, nav_msgs/Odometry).
+- Services (Client/Server): Synchronous request-response RPC calls suited for quick state changes such as resetting odometry or toggling a gripper.
+- Actions (Goal/Feedback/Result): Asynchronous, preemptible long-running tasks such as MoveBase navigation goals or MoveIt2 arm trajectories, providing periodic progress feedback and cancellation support.
+
+--- PAGE 2 ---
+4.3 Coordinate Transforms (TF2) and URDF Modeling
+Mobile and articulated robots continuously relate sensor measurements across moving coordinate frames. ROS2 manages the kinematic transform tree via TF2, tracking standard frames defined in REP-105:
+- map: World-fixed global frame (drift-free, updated by SLAM or AMCL localization).
+- odom: Continuous world-fixed frame derived from wheel odometry or visual-inertial odometry; smooth locally but accumulates unbounded drift over time.
+- base_link (or base_footprint): Rigidly attached to the robot chassis center.
+- sensor frames (laser_frame, camera_optical_frame): Fixed offsets defined in the robot's Unified Robot Description Format (URDF) or Xacro XML model and published by robot_state_publisher.
+
+--- PAGE 3 ---
+4.4 Nav2 Autonomous Navigation Stack
+The ROS2 Navigation2 (Nav2) framework coordinates autonomous mobile robot traversal using a Behavior Tree orchestrator:
+1. Map Server & AMCL (Adaptive Monte Carlo Localization): Uses a particle filter over a 2D occupancy grid to localize the robot pose from laser scans.
+2. Costmaps (Global and Local): Inflate static obstacles and live sensor readings into a 2D cost grid encoding robot footprint and safety inflation radius.
+3. Global Planner (NavFn / Smac Planner): Computes minimum-cost collision-free paths across the global costmap using Dijkstra, A*, or Hybrid-A* for non-holonomic Ackermann vehicles.
+4. Local Controller (DWB / MPPI): Tracks the global path while generating dynamically feasible cmd_vel Twist commands (linear.x, angular.z) and reacting instantaneously to dynamic obstacles.

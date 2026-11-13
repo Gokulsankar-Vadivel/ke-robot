@@ -1,0 +1,6 @@
+{
+  "name": "ROBO KNOWLEDGE AI",
+  "description": "AI-Powered Robotics Knowledge Assistant — Institutional RAG platform for robotics study materials, kinematics, ROS2, sensors, motor control, and autonomous navigation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,26 @@
+INSTITUTIONAL STUDY MODULE 03: MOTOR CONTROL AND PID FEEDBACK SYSTEMS
+Department of Robotics & Automation Engineering
+
+--- PAGE 1 ---
+3.1 Electric Actuators and Power Electronics
+Selecting the right motor and driver stage governs torque density, efficiency, and controllability:
+- Brushed DC Motors + H-Bridge Drivers: Torque is proportional to armature current (tau = Kt * I). An H-bridge (using four power MOSFETs such as DRV8871 or BTS7960) enables bidirectional rotation, coasting, and regenerative/dynamic braking. Flyback diodes or synchronous rectification protect switching transistors from inductive voltage spikes.
+- Brushless DC (BLDC) Motors & Field-Oriented Control (FOC): Electronic commutation eliminates brush wear and improves thermal dissipation. Trapezoidal commutation suits fans and basic wheels, while Field-Oriented Control (FOC) transforms 3-phase stator currents via Clarke and Park transforms to control quadrature (torque-producing) current independently for smooth low-speed robotics joints.
+- Stepper Motors: Move in discrete angular increments (commonly 1.8 degrees/step, 200 steps/rev) using open-loop pulse trains. Microstepping drivers (TMC2209) interpolate sinusoidal coil currents to reduce resonance and acoustic noise, though open-loop steppers can skip steps under sudden overload.
+
+--- PAGE 2 ---
+3.2 PID Control Loop Formulation
+Closed-loop feedback control minimizes the tracking error e(t) = r(t) - y(t) between reference setpoint r(t) and measured plant output y(t):
+u(t) = Kp * e(t) + Ki * integral(e(tau) d_tau) + Kd * (de(t)/dt)
+
+Role of each gain term:
+- Proportional Gain (Kp): Scales restoring effort directly with instantaneous error. Increasing Kp speeds up rise time, but excessive Kp causes overshoot and sustained oscillation.
+- Integral Gain (Ki): Accumulates historical error to eliminate steady-state offset caused by friction or gravity loads. Excessive Ki causes integrator windup and sluggish settling.
+- Derivative Gain (Kd): Reacts to the rate of error change, adding artificial damping that reduces overshoot. Because differentiating raw encoder counts amplifies quantization noise, derivative terms are typically applied to the measured process variable (derivative-on-measurement) with a low-pass filter.
+
+--- PAGE 3 ---
+3.3 Practical PID Tuning, Anti-Windup, and Discrete Implementation
+In embedded microcontrollers running at fixed sample period Ts (e.g., 1 ms to 10 ms for velocity/position loops):
+1. Integrator Anti-Windup: Clamp the accumulated integral term or apply back-calculation whenever the actuator command u(t) saturates at +/- U_max (e.g., 100% PWM duty cycle). Without anti-windup, the robot arm exhibits severe overshoot after sustained saturation.
+2. Ziegler-Nichols & Empirical Tuning Workflow: Start with Ki = 0 and Kd = 0; raise Kp until steady oscillation or acceptable step response; add Kd to damp overshoot; introduce small Ki to remove steady-state error.
+3. Cascaded Control Loops: High-performance robotic actuators nest an inner fast current/torque loop (10–20 kHz), a middle velocity loop (1–2 kHz), and an outer position loop (200–500 Hz).

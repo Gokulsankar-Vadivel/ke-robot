@@ -1,0 +1,24 @@
+INSTITUTIONAL STUDY MODULE 02: SENSORS, ACTUATORS, AND MICROCONTROLLERS (ARDUINO & ESP32)
+Department of Robotics & Automation Engineering
+
+--- PAGE 1 ---
+2.1 Proprioceptive and Exteroceptive Sensors in Robotics
+Accurate state estimation depends on matching sensor modality to physical dynamics:
+- Quadrature Optical/Magnetic Encoders: Output two 90-degree phase-shifted pulse channels (A and B) plus an optional Index (Z) channel. Decoding rising and falling edges in 4x quadrature mode multiplies resolution by 4 and determines rotation direction.
+- Inertial Measurement Units (IMU): Combine a 3-axis MEMS accelerometer (linear acceleration + gravity vector) and a 3-axis gyroscope (angular velocity). 9-DOF IMUs add a magnetometer. Sensor fusion algorithms such as Madgwick or Extended Kalman Filters (EKF) eliminate gyroscope drift and accelerometer high-frequency noise.
+- Ultrasonic Sensors (HC-SR04): Measure time-of-flight of 40 kHz acoustic pulses (distance = speed_of_sound * duration / 2). Effective range is 2 cm to 400 cm, though oblique specular surfaces cause false echoes.
+- 2D/3D LiDAR: Uses pulsed laser time-of-flight or phase-shift measurement to construct dense point clouds for SLAM and obstacle avoidance.
+
+--- PAGE 2 ---
+2.2 Microcontrollers: Arduino vs. ESP32 Architecture
+Embedded robotics controllers bridge sensors and motor drivers with deterministic timing:
+- Arduino Uno / Mega (ATmega328P / ATmega2560): 8-bit AVR architecture running at 16 MHz, 5V logic levels, hardware PWM timers, UART/SPI/I2C peripherals. Ideal for introductory lab rigs, simple servo sequencing, and 5V industrial sensor interfacing, though limited in RAM (2 KB on Uno) and floating-point throughput.
+- ESP32 (Xtensa LX6 Dual-Core / RISC-V): 32-bit dual-core MCU running up to 240 MHz with 520 KB SRAM, integrated Wi-Fi (802.11 b/g/n) and Bluetooth/BLE, 12-bit ADCs, hardware MCPWM motor-control peripherals, PCNT pulse counters for hardware quadrature encoding, and FreeRTOS multitasking support. Operates at 3.3V logic, requiring level shifters when interfaced with 5V peripherals.
+
+--- PAGE 3 ---
+2.3 Communication Buses and PWM Signal Conditioning
+Robotics subsystems exchange sensor telemetry and actuator commands over standard serial protocols:
+- I2C (Inter-Integrated Circuit): Two-wire synchronous bus (SDA, SCL) with 7-bit addressing and pull-up resistors (typically 4.7 kOhm). Suited for short-range board-level IMUs and OLEDs at 100 kHz–400 kHz.
+- SPI (Serial Peripheral Interface): Four-wire full-duplex bus (MOSI, MISO, SCLK, CS) supporting >10 MHz throughput for high-rate encoders, SD storage, and camera modules.
+- UART / RS-485 / CAN Bus: Asynchronous serial and differential buses. CAN bus provides deterministic arbitration, CRC error checking, and EMI immunity across long robot wiring harnesses.
+- Pulse Width Modulation (PWM): Controls DC motor average voltage via duty cycle D = t_on / T_period (typically 10–25 kHz for silent motor driving) or encodes hobby servo position (50 Hz, 1000–2000 microsecond pulse width).

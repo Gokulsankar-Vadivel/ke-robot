@@ -1,0 +1,22 @@
+INSTITUTIONAL STUDY MODULE 06: INDUSTRIAL ROBOTICS SAFETY AND SYSTEM TROUBLESHOOTING
+Department of Robotics & Automation Engineering
+
+--- PAGE 1 ---
+6.1 Industrial Robotics Standards and Safety Architecture
+Industrial and collaborative robots operate under strict functional safety standards to prevent operator injury and equipment damage:
+- ISO 10218-1 & ISO 10218-2: Safety requirements for industrial robots and integrated robot cells, specifying physical guarding, light curtains, safety-rated monitored stop, and dual-channel safety relays.
+- ISO/TS 15066 (Collaborative Robots / Cobots): Defines four collaborative operation modes: (1) Safety-rated monitored stop, (2) Hand guiding, (3) Speed and separation monitoring (SSM) using safety laser scanners, and (4) Power and force limiting (PFL) with biomechanical pressure/force thresholds.
+- Emergency Stop (E-Stop): Must be hardwired as a Category 0 (immediate power removal) or Category 1 (controlled decelerated stop followed by power removal) dual-channel normally-closed circuit independent of software or ROS2 nodes.
+
+--- PAGE 2 ---
+6.2 Systematic Robotics Troubleshooting Methodology
+When diagnosing hardware or software anomalies in mobile robots or robotic arms, follow a layered isolation checklist:
+1. Power Rail & Brownout Diagnostics: Sudden microcontroller resets during high-torque motor startup indicate battery voltage sag or missing bulk decoupling capacitors. Verify logic (3.3V/5V) and actuator (12V/24V/48V) rails separately under load with an oscilloscope.
+2. Motor Driver Overcurrent / Thermal Faults: Check mechanical binding, excessive PID Kp gain causing chatter, or stalled rotor currents exceeding driver continuous ratings.
+3. Encoder & Odometry Drift: Missing counts or reversed sign conventions cause robots to spin continuously during closed-loop PID or Nav2 control. Verify quadrature channel polarity and pull-up resistors.
+
+--- PAGE 3 ---
+6.3 ROS2 and Sensor Integration Troubleshooting
+- TF2 Extrapolation / Missing Transform Errors: Confirm all nodes share synchronized clocks (use_sim_time consistency in Gazebo vs. hardware NTP/PTP) and check the transform tree using ros2 run tf2_tools view_frames.
+- Topic QoS Mismatch: If a subscriber receives zero messages despite an active publisher, verify matching Reliability (Reliable vs. Best Effort) and Durability policies using ros2 topic info --verbose.
+- I2C Bus Lockup: Long unshielded cables next to BLDC motor phase wires induce EMI noise on SDA/SCL lines. Keep I2C runs short (< 30 cm), add shielded twisted pairs, or switch to CAN bus / differential RS-485 for chassis-wide communication.

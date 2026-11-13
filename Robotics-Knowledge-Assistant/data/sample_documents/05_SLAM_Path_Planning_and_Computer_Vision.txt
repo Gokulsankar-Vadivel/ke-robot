@@ -1,0 +1,23 @@
+INSTITUTIONAL STUDY MODULE 05: SLAM, PATH PLANNING, AND COMPUTER VISION IN ROBOTICS
+Department of Robotics & Automation Engineering
+
+--- PAGE 1 ---
+5.1 Simultaneous Localization and Mapping (SLAM)
+SLAM addresses the coupled chicken-and-egg problem in which a mobile robot must build a map of an unknown environment while simultaneously estimating its own trajectory within that map.
+- Probabilistic Formulation: Maintain a belief over robot pose x_t and map landmarks m given control inputs u_{1:t} and sensor observations z_{1:t}.
+- EKF-SLAM & FastSLAM: Early Kalman-filter and Rao-Blackwellized particle-filter approaches for landmark and 2D occupancy-grid mapping (GMapping).
+- Graph-Based SLAM (SLAM Toolbox, Cartographer, ORB-SLAM3): Represents robot poses as graph nodes and odometry/scan-matching constraints as edges. Loop closure detection recognizes previously visited locations and optimizes the pose graph via nonlinear least squares (g2o, Ceres) to eliminate accumulated drift.
+
+--- PAGE 2 ---
+5.2 Robot Path Planning Algorithms
+Motion planning determines collision-free trajectories from start configuration q_start to goal configuration q_goal in Configuration Space (C-Space):
+- Graph Search (Dijkstra and A*): A* guarantees optimal shortest paths on discretized grids when paired with an admissible heuristic h(n) <= true_cost(n), such as Euclidean or Manhattan distance.
+- Sampling-Based Planners (PRM and RRT / RRT*): Rapidly-exploring Random Trees (RRT) expand a tree by randomly sampling C-Space and steering toward valid states, making them effective in high-dimensional 6-DOF manipulator planning. RRT* rewires nearby vertices to achieve asymptotic optimality.
+- Dynamic Window Approach (DWA) & Artificial Potential Fields: Reactive local planners balancing goal attraction against obstacle repulsion and motor acceleration limits.
+
+--- PAGE 3 ---
+5.3 Computer Vision and AI in Robotics
+Vision pipelines give robots semantic scene understanding and 3D spatial perception:
+- Classical Vision (OpenCV): Camera calibration (pinhole intrinsics K and radial/tangential distortion coefficients), AprilTag/ArUco fiducial pose estimation (SolvePnP), optical flow, and HSV/edge segmentation.
+- Deep Learning Perception: Convolutional object detectors (YOLO) locate graspable targets in 2D image coordinates; RGB-D depth alignment (Intel RealSense, ZED stereo) back-projects pixel detections into 3D camera coordinates (X, Y, Z) for robotic pick-and-place.
+- Reinforcement Learning and Sim-to-Real: Training locomotion or grasping policies in physics simulators (Isaac Gym, Gazebo, MuJoCo) using domain randomization before transferring policies to physical hardware.
